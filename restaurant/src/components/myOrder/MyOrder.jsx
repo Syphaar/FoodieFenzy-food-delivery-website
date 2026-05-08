@@ -14,7 +14,7 @@ const MyOrder = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/api/orders', {
+                const response = await axios.get('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders', {
                     params: { email: user?.email },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('authToken')}`
@@ -216,7 +216,7 @@ const MyOrder = () => {
                                             <div className="space-y-2">
                                                 {order.items.map((item, index) => (
                                                     <div key={`${order._id}-${index}`} className='flex items-center gap-3 p-2 bg-[#3a2b2b]/50 rounded-lg'>
-                                                        <img src={`http://localhost:4000${item.item.imageUrl}`} alt={item.item.name} className='w-10 h-10 object-cover rounded-lg' />
+                                                        <img src={`http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app${item.item.imageUrl}`} alt={item.item.name} className='w-10 h-10 object-cover rounded-lg' />
 
                                                         <div className="flex-1">
                                                             <span className="text-amber-100/80 text-sm block">
@@ -280,133 +280,3 @@ const MyOrder = () => {
 }
 
 export default MyOrder
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// <tr key={order._id} className="border-b border-amber-500/20 hover:bg-[#3a2b2b]/30 transition-colors group">
-//                                         {/* Order ID */}
-//                                         <td className="p-4 text-amber-100 font-mono text-sm">
-//                                             #{order._id?.slice(-8)}
-//                                         </td>
-
-//                                         {/* Customer */}
-//                                         <td className="p-4">
-//                                             <div className="flex items-center gap-2">
-//                                             <FiUser className="text-amber-400" />
-//                                             <div>
-//                                                 <p className="text-amber-100">
-//                                                 {order.firstName} {order.lastName}
-//                                                 </p>
-//                                                 <p className="text-sm text-amber-400/60">{order.phone}</p>
-//                                             </div>
-//                                             </div>
-//                                         </td>
-
-//                                         {/* Address */}
-//                                         <td className="p-4">
-//                                             <div className="flex items-center gap-2">
-//                                             <FiMapPin className="text-amber-400" />
-//                                             <div className="text-amber-100/80 text-sm max-w-50">
-//                                                 {order.address}, {order.city} - {order.zipCode}
-//                                             </div>
-//                                             </div>
-//                                         </td>
-
-//                                         {/* Items */}
-//                                         <td className="p-4">
-//                                             <div className="space-y-2">
-//                                             {order.items.map((item, index) => (
-//                                                 <div
-//                                                 key={item._id || index}
-//                                                 className="flex items-center gap-3 p-2 bg-[#3a2b2b]/50 rounded-lg"
-//                                                 >
-//                                                 <img
-//                                                     src={`http://localhost:4000${item.item.imageUrl}`}
-//                                                     alt={item.item.name}
-//                                                     className="w-10 h-10 object-cover rounded-lg"
-//                                                 />
-
-//                                                 <div>
-//                                                     <p className="text-amber-100 text-sm">{item.item.name}</p>
-//                                                     <p className="text-xs text-amber-400/70">
-//                                                     Qty: {item.quantity}
-//                                                     </p>
-//                                                 </div>
-//                                                 </div>
-//                                             ))}
-//                                             </div>
-//                                         </td>
-
-//                                         {/* Total Items */}
-//                                         <td className="p-4 text-amber-100">{totalItems}</td>
-
-//                                         {/* Price */}
-//                                         <td className="p-4 text-amber-300 font-semibold">
-//                                             ${totalPrice.toFixed(2)}
-//                                         </td>
-
-//                                         {/* Payment */}
-//                                         <td className="p-4">
-//                                             <span
-//                                             className={`px-3 py-1 rounded-full text-xs border ${paymentMethod.class}`}
-//                                             >
-//                                             {paymentMethod.label}
-//                                             </span>
-//                                         </td>
-
-//                                         {/* Status */}
-//                                         <td className="p-4">
-//                                             <span
-//                                             className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs ${status.bg} ${status.color}`}
-//                                             >
-//                                             {status.icon}
-//                                             {status.label}
-//                                             </span>
-//                                         </td>
-//                                     </tr>

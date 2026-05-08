@@ -125,23 +125,8 @@ const Contact = () => {
                     <div className="absolute -top-4 -right-4 w-12 h-12 bg-amber-500/30 rounded-full animate-ping-slow" />
 
                     <form onSubmit={handleSubmit} className='space-y-6 relative z-10'>
-                        {/* {contactFormFields.map(({ label, fname, type, placeholder, pattern, Icon }) => (
-                            <div key={fname}>
-                                <label className="block text-amber-100 text-sm font-medium mb-2">{label}</label>
-
-                                <div className="relative">
-                                    <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                                        <Icon className='text-amber-500 text-xl animate-pulse' />
-                                    </div>
-                                    <input type={type} value={formData[fname]} name={fname} onChange={handleChange} className="w-full pl-10 pr-4 py-3 
-                                        bg-white/10 border-2 border-amber-500/30 rounded-xl text-amber-50 focus:ring-2 focus:ring-amber-500 focus:border-transparent 
-                                        placeholder-amber-200/50" placeholder={placeholder} pattern={pattern} required />
-                                </div>
-                            </div>
-                        ))} */}
                         {contactFormFields.map((field) => {
                             const { label, fname, type, placeholder, pattern, Icon } = field;
-
                             return (
                                 <div key={fname}>
                                     <label className="block text-amber-100 text-sm font-medium mb-2">

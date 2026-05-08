@@ -82,7 +82,7 @@ export const CartProvider = ({ children }) => {
     const token = localStorage.getItem("authToken");
     if (token) {
       axios
-        .get("http://localhost:4000/api/cart", {
+        .get("http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/cart", {
           withCredentials: true,
           headers: { Authorization: `Bearer ${token}` },
         })
@@ -157,7 +157,7 @@ export const CartProvider = ({ children }) => {
   const token = localStorage.getItem("authToken");
   try {
     const res = await axios.post(
-      "http://localhost:4000/api/cart",
+      "http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/cart",
       { itemId: item._id, quantity: Number(qty) },
       { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
     );
@@ -188,7 +188,7 @@ export const CartProvider = ({ children }) => {
   // const addToCart = useCallback(async (item, qty) => {
   //   const token = localStorage.getItem('authToken')
   //   const res = await axios.post(
-  //     'http://localhost:4000/api/cart',
+  //     'http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/cart',
   //     // { itemId: item._id, quantity: qty },
   //     { itemId: item._id, quantity: Number(qty) },
   //     {
@@ -204,7 +204,7 @@ export const CartProvider = ({ children }) => {
 
   //   try {
   //     const res = await axios.post(
-  //       'http://localhost:4000/api/cart',
+  //       'http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/cart',
   //       { itemId: item._id, quantity: qty }, // send real MongoDB ObjectId
   //       { withCredentials: true, headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` } }
   //     );
@@ -229,7 +229,7 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = useCallback(async (_id) => {
     const token = localStorage.getItem("authToken");
     try {
-      await axios.delete(`http://localhost:4000/api/cart/${_id}`, {
+      await axios.delete(`http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/cart/${_id}`, {
         withCredentials: true,
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -277,7 +277,7 @@ export const CartProvider = ({ children }) => {
     const token = localStorage.getItem("authToken");
     try {
       const res = await axios.put(
-        `http://localhost:4000/api/cart/${_id}`,
+        `http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/cart/${_id}`,
         { quantity: qty },
         { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );
@@ -319,7 +319,7 @@ export const CartProvider = ({ children }) => {
     const token = localStorage.getItem("authToken");
     try {
       await axios.put(
-        `http://localhost:4000/api/cart/clear`,
+        `http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/cart/clear`,
         {},
         { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );

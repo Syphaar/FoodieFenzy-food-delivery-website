@@ -34,7 +34,7 @@ const Checkout = () => {
       setLoading(true);
 
       if (paymentStatus === 'success' && sessionId) {
-        axios.post('http://localhost:4000/api/orders/confirm',
+        axios.post('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders/confirm',
           { sessionId },
           { headers: authHeaders }
         )
@@ -84,14 +84,14 @@ const Checkout = () => {
 
     try {
       if (formData.paymentMethod === 'online') {
-        const { data } = await axios.post('http://localhost:4000/api/orders',
+        const { data } = await axios.post('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders',
           payload,
           { headers: authHeaders }
         );
         window.location.href = data.checkoutUrl;
       } else {
         // CASH ON DELIVERY (COD)
-        const { data } = await axios.post('http://localhost:4000/api/orders',
+        const { data } = await axios.post('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders',
           payload,
           { headers: authHeaders }
         )
@@ -107,10 +107,6 @@ const Checkout = () => {
       setLoading(false)
     }
   }
-
-
-
-
 
   return (
     <div className='min-h-screen bg-linear-to-b from-[#1a1212] to-[#2a1e1e] text-white py-16 px-4'>

@@ -340,7 +340,8 @@
 
 
 import React, { useEffect, useState } from 'react'
-import { addButtonBase, addButtonHover, additionalData, cardData, commonTransition } from '../../assets/dummydata';
+// import { addButtonBase, addButtonHover, additionalData, cardData, commonTransition } from '../../assets/dummydata';
+import { addButtonBase, addButtonHover, commonTransition } from '../../assets/dummydata';
 import { useCart } from '../../cartContext/useCart';
 import { FaFire, FaHeart, FaPlus, FaStar } from 'react-icons/fa';
 import { HiMinus, HiPlus } from 'react-icons/hi';
@@ -355,28 +356,15 @@ const SpecialOffer = () => {
 
     // FETCH MENU
     useEffect(() => {
-        axios.get('http://localhost:4000/api/items')
+        axios.get('http://https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/items')
             .then(res => setItems(res.data.items ?? res.data))
             .catch(err => console.error(err));
     }, [])
 
     const displayList = Array.isArray(items) ? items.slice(0, showAll ? 8 : 4) : [];
 
-    // // ✅ Correctly map item for backend
-    // const addItemToCart = (item) => {
-    //     if (!item.id && !item._id) return console.error("Missing id for item:", item);
-
-    //     const payload = {
-    //         _id: item._id || item.id, // backend expects _id
-    //         name: item.title,
-    //         price: parseFloat(item.price.replace('₹', ''))
-    //     };
-
-    //     addToCart(payload, 1);
-    // };
-
     const addItemToCart = (item) => {
-        if (!item.id){ return console.error("Missing _id:", item);}
+        if (!item._id){ return console.error("Missing _id:", item);}
         
         const payload = {
             itemId: item.id,  // must be string ObjectId

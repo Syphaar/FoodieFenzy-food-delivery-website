@@ -3,16 +3,10 @@ import { useCart } from '../../cartContext/useCart';
 // import { dummyMenuData } from '../../assets/OmDD'
 import { FaMinus, FaPlus } from "react-icons/fa";
 import axios from 'axios';
-// import './OurMenu.css'
 
 const categories = ['Breakfast', 'Lunch', 'Dinner', 'Mexican', 'Italian', 'Desserts', 'Drinks'];
 
 const OurMenu = () => {
-    // const [ activeCategory, setActiveCategory ] = useState(categories[0]);
-    // const displayItems = (dummyMenuData[activeCategory] || []).slice(0, 12);
-    // const { cartItems, addToCart, removeFromCart } = useCart();
-    // const getQuantity = id =>(cartItems.find(idx => idx.id === id) ?.quantity || 0);
-
     const [ activeCategory, setActiveCategory ] = useState(categories[0]);
     const { cartItems, addToCart, removeFromCart, updateQuantity } = useCart();
     const [menuData, setMenuData] = useState({});
@@ -20,7 +14,7 @@ const OurMenu = () => {
     useEffect(() => {
         const fetchMenu = async () => {
             try {
-                const res = await axios.get('http://localhost:4000/api/items');
+                const res = await axios.get('http://https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/items');
                 const byCategory = res.data.reduce((acc, item) => {
                     const cat = item.category || 'Uncategorized';
                     acc[cat] = acc[cat] || [];
@@ -37,15 +31,14 @@ const OurMenu = () => {
     }, [])
 
     // USE ID TO FIND AND UPDATE
-    // const getCartEntry = id => cartItems.find(ci => ci.item?._id === id);
     const getCartEntry = (id) => cartItems.find(ci => ci.item?._id === id || ci.item?.id === id);
-    const getQuantity = id => getCartEntry(id)?.quantity || 0;
+    // const getQuantity = id => getCartEntry(id)?.quantity || 0;
 
     // HANDLE ADD TO CART
     const handleAddToCart = (item) => {
         const itemId = item._id || item.id; // fallback if your API uses 'id'
         if (!itemId) return console.error("Item ID missing", item);
-
+        // addToCart expects the item object to have an _id field for backend compatibility
         addToCart({ ...item, _id: itemId }, 1); // backend receives correct _id
     };
 
