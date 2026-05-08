@@ -14,12 +14,21 @@ const port = process.env.PORT || 4000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    "http://localhost:4000",
+    'https://foodie-fenzy-admin-dashboard.vercel.app',
+    "https://foodie-fenzy-food-delivery-website.vercel.app",
+    process.env.FRONTEND_URL,
+    process.env.ADMIN_URL,
+    ...(process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : []),
+].filter(Boolean).map(origin => origin.trim());
 
 //  MIDDLEWARE
 app.use(cors({
     origin: (origin, callback) => {
-        const allowedOrgins = ['http://localhost:5173', 'http://localhost:5174'];
-        if (!origin || allowedOrgins.includes(origin)) {
+        if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true)
         }
         else {
