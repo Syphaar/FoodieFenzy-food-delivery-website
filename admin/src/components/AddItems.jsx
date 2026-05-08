@@ -53,7 +53,7 @@ const AddItems = () => {
             });
 
             const res = await axios.post(
-                'http://localhost:4000/api/items', payload, { headers: { 'Content-Type': 'multipart/form-data' }}
+                'https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/items', payload, { headers: { 'Content-Type': 'multipart/form-data' }}
             );
             setFormData({
                 name: '',
@@ -66,6 +66,7 @@ const AddItems = () => {
                 image: null,
                 preview: ''
             })
+            console.log(res.data);
         }
         catch (err) {
             console.error('Error uploading item', err.response || err.message);
