@@ -3,6 +3,8 @@ import { useCart } from '../../cartContext/useCart'
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
+
 const VerifyPaymentPage = () => {
   const { clearCart } = useCart();
   const { search } = useLocation();
@@ -35,7 +37,7 @@ const VerifyPaymentPage = () => {
       return;
     }
 
-    axios.get('http://localhost:4000/api/orders/confirm', {
+    axios.get(`${API_URL}/api/orders/confirm`, {
       params: { session_id },
       headers: authHeaders
     })

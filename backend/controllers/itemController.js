@@ -28,7 +28,8 @@ export const createItem = async (req, res, next) => {
 export const getItems = async (_req, res, next) => {
     try {
         const items = await itemModal.find().sort({ createdAt: -1 });
-        const host = `${_req.protocol}://${_req.get('host')}`;
+        const protocol = _req.get('x-forwarded-proto') || _req.protocol;
+        const host = `${protocol}://${_req.get('host')}`;
 
         const withFullUrl = items.map(itemDocument => ({
             ...itemDocument.toObject(),

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useCart } from '../../cartContext/useCart';
 import { FaMinus, FaPlus, FaTimes, FaTrash } from 'react-icons/fa';
 
-const API_URL = 'http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app';
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
 
 const CartPage = () => {
 

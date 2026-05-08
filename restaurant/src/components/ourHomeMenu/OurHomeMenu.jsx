@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import './OurHomeMenu.css'
 
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
 const categories = ['Breakfast', 'Lunch', 'Dinner', 'Mexican', 'Italian', 'Desserts', 'Drinks'];
 
 const OurHomeMenu = () => {
@@ -14,7 +15,7 @@ const OurHomeMenu = () => {
     const [menuData, setMenuData] = useState({});
 
     useEffect(() => {
-        axios.get('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/items')
+        axios.get(`${API_URL}/api/items`)
         .then(res => {
             const grouped = res.data.reduce((account, item) => {
                 account[item.category] = account[item.category] || [];

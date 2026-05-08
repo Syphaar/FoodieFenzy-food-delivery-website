@@ -3,6 +3,14 @@ import { layoutClasses, tableClasses, statusStyles, paymentMethodDetails, iconMa
 import axios from 'axios'
 import { FiBox, FiUser } from 'react-icons/fi'
 
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
+
+const buildImageUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http') || path.startsWith('data:')) return path;
+  return path.startsWith('/') ? `${API_URL}${path}` : `${API_URL}/uploads/${path}`;
+};
+
 const Order = () => {
   const [orders, setOrders] = useState([])
   const [loading, setLoading] = useState(true)
@@ -12,7 +20,7 @@ const Order = () => {
     const fetchOrders = async () => {
       try {
         const response = await axios.get(
-          'http://https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders/getall',
+          `${API_URL}/api/orders/getall`,
           {
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           } // optional
@@ -43,7 +51,7 @@ const Order = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await axios.put(`http://https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders/getall/${orderId}`, { status: newStatus });
+      await axios.put(`${API_URL}/api/orders/getall/${orderId}`, { status: newStatus });
       setOrders(orders.map(o => o._id === orderId ? { ...o, status: newStatus } : o))
     }
     catch (error) {
@@ -128,7 +136,7 @@ const Order = () => {
                         <div className="space-y-1 max-h-25 overflow-auto">
                           {order.items.map((itm, index) => (
                             <div key={index} className="flex items-center gap-3 p-2 rounded-lg">
-                              <img src={`http://https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/${itm.item.imageUrl}`} alt={itm.item.name} className='w-10 h-10 object-cover rounded-lg' />
+                              <img src={buildImageUrl(itm.item.imageUrl)} alt={itm.item.name} className='w-10 h-10 object-cover rounded-lg' />
                               {/* <img src={`http://localhost:4000${itm.item.image || ''}`} alt={itm.item.name || 'Item'} /> */}
 
                               <div className="flex-1">

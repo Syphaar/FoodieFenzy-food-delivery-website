@@ -4,7 +4,7 @@ import { iconClass, inputBase } from '../../assets/dummydata';
 import { Link } from 'react-router-dom'
 import axios from 'axios';
 
-const url = 'http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app';
+const url = 'https://foodie-fenzy-delivery-backend.vercel.app';
 
 const Login = ({ onLoginSuccess, onClose }) => {
   const [showToast, setShowToast] = useState({visible: false, message: '', isError: false});

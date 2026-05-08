@@ -4,7 +4,7 @@ import { FaArrowLeft, FaCheckCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
-const url = 'http://https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/'
+const url = 'https://foodie-fenzy-delivery-backend.vercel.app'
 
 const AwesomeToast = ({message, icon}) => (
   <div className='animate-slide-in fixed bottom-6 right-6 flex items-center bg-linear-to-br from-amber-500 to-amber-600 

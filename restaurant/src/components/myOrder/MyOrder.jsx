@@ -3,6 +3,14 @@ import { FiArrowLeft, FiBox, FiCheckCircle, FiClock, FiMapPin, FiTruck, FiUser }
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
+
+const buildImageUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http') || path.startsWith('data:')) return path;
+    return path.startsWith('/') ? `${API_URL}${path}` : `${API_URL}/uploads/${path}`;
+};
+
 const MyOrder = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -14,7 +22,7 @@ const MyOrder = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders', {
+                const response = await axios.get(`${API_URL}/api/orders`, {
                     params: { email: user?.email },
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('authToken')}`
@@ -216,7 +224,7 @@ const MyOrder = () => {
                                             <div className="space-y-2">
                                                 {order.items.map((item, index) => (
                                                     <div key={`${order._id}-${index}`} className='flex items-center gap-3 p-2 bg-[#3a2b2b]/50 rounded-lg'>
-                                                        <img src={`http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app${item.item.imageUrl}`} alt={item.item.name} className='w-10 h-10 object-cover rounded-lg' />
+                                                        <img src={buildImageUrl(item.item.imageUrl)} alt={item.item.name} className='w-10 h-10 object-cover rounded-lg' />
 
                                                         <div className="flex-1">
                                                             <span className="text-amber-100/80 text-sm block">

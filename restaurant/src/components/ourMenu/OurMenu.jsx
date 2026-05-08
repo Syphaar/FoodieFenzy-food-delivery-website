@@ -4,6 +4,7 @@ import { useCart } from '../../cartContext/useCart';
 import { FaMinus, FaPlus } from "react-icons/fa";
 import axios from 'axios';
 
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
 const categories = ['Breakfast', 'Lunch', 'Dinner', 'Mexican', 'Italian', 'Desserts', 'Drinks'];
 
 const OurMenu = () => {
@@ -14,7 +15,7 @@ const OurMenu = () => {
     useEffect(() => {
         const fetchMenu = async () => {
             try {
-                const res = await axios.get('http://https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/items');
+                const res = await axios.get(`${API_URL}/api/items`);
                 const byCategory = res.data.reduce((acc, item) => {
                     const cat = item.category || 'Uncategorized';
                     acc[cat] = acc[cat] || [];

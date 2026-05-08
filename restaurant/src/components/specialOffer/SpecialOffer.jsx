@@ -7,6 +7,8 @@ import { HiMinus, HiPlus } from 'react-icons/hi';
 import FloatingParticles from '../floatingParticles/FloatingParticles';
 import axios from 'axios';
 
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
+
 const SpecialOffer = () => {
     const [showAll, setShowAll] = useState(false);
     // const initialData = [...cardData, ...additionalData];
@@ -15,7 +17,7 @@ const SpecialOffer = () => {
 
     // FETCH MENU
     useEffect(() => {
-        axios.get('http://https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/items')
+        axios.get(`${API_URL}/api/items`)
             .then(res => setItems(res.data.items ?? res.data))
             .catch(err => console.error(err));
     }, [])

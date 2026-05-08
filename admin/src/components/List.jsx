@@ -3,6 +3,8 @@ import { styles } from '../assets/dummyadmin'
 import { FiHeart, FiStar, FiTrash2 } from 'react-icons/fi'
 import axios from 'axios'
 
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
+
 const List = () => {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -10,7 +12,7 @@ const List = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const {data} = await axios.get('http://localhost:4000/api/items')
+        const {data} = await axios.get(`${API_URL}/api/items`)
         setItems(data);
       }
       catch (error) {
@@ -28,7 +30,7 @@ const List = () => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
 
     try {
-      await axios.delete(`http://localhost:4000/api/items/${itemId}`);
+      await axios.delete(`${API_URL}/api/items/${itemId}`);
       setItems(prev => prev.filter(item => item._id !== itemId))
       console.log('Deleted item ID:', itemId);
     }

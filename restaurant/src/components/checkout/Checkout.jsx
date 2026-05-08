@@ -4,6 +4,8 @@ import { FaArrowLeft, FaLock } from 'react-icons/fa'
 import { useCart } from '../../cartContext/useCart'
 import axios from 'axios'
 
+const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
+
 const Checkout = () => {
   const { totalAmount, cartItems, clearCart } = useCart();
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ const Checkout = () => {
       setLoading(true);
 
       if (paymentStatus === 'success' && sessionId) {
-        axios.post('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders/confirm',
+        axios.post(`${API_URL}/api/orders/confirm`,
           { sessionId },
           { headers: authHeaders }
         )
@@ -84,14 +86,14 @@ const Checkout = () => {
 
     try {
       if (formData.paymentMethod === 'online') {
-        const { data } = await axios.post('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders',
+        const { data } = await axios.post(`${API_URL}/api/orders`,
           payload,
           { headers: authHeaders }
         );
         window.location.href = data.checkoutUrl;
       } else {
         // CASH ON DELIVERY (COD)
-        const { data } = await axios.post('http://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/orders',
+        const { data } = await axios.post(`${API_URL}/api/orders`,
           payload,
           { headers: authHeaders }
         )
