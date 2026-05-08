@@ -91,7 +91,8 @@ const AddItems = () => {
                                         <p className={styles.uploadText}>Click to upload product image</p>
                                     </div>
                                 )}
-                                <input type="file" accept='image/*' onChange={handleInputUpload} className='hidden' required />
+                                {/* <input type="file" accept='image/*' onChange={handleInputUpload} className='hidden' required /> */}
+                                <input type="file" accept='image/*' onChange={handleInputUpload} className='sr-only' required />
                             </label>
                         </div>
                         <div className="space-y-6">
