@@ -53,7 +53,7 @@ const AddItems = () => {
             });
 
             const res = await axios.post(
-                'https://foodie-fenzy-delivery-backend-git-main-sifons-projects.vercel.app/api/items', payload, { headers: { 'Content-Type': 'multipart/form-data' }}
+                'https://foodie-fenzy-delivery-backend.vercel.app/api/items', payload, { headers: { 'Content-Type': 'multipart/form-data' }}
             );
             setFormData({
                 name: '',
