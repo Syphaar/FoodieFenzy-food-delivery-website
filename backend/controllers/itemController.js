@@ -3,7 +3,9 @@ import itemModal from "../modals/itemModal.js";
 export const createItem = async (req, res, next) => {
     try {
         const { name, description, category, price, rating, hearts } = req.body;
-        const imageUrl = req.file ? `/uploads/${req.file.filename}` : '';
+        const imageUrl = req.file
+            ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`
+            : '';
 
         const total = Number(price) * 1;
 
@@ -16,8 +18,9 @@ export const createItem = async (req, res, next) => {
     }
     catch (err) {
         if (err.code === 11000) {
-            res.status(400).json({ message: 'Item name already exists'})
+            return res.status(400).json({ message: 'Item name already exists'})
         }
+        next(err);
     }
 }
 
@@ -29,7 +32,9 @@ export const getItems = async (_req, res, next) => {
 
         const withFullUrl = items.map(itemDocument => ({
             ...itemDocument.toObject(),
-            imageUrl: itemDocument.imageUrl ? host + itemDocument.imageUrl : '',
+            imageUrl: itemDocument.imageUrl?.startsWith('/uploads/')
+                ? host + itemDocument.imageUrl
+                : itemDocument.imageUrl || '',
         }))
         res.json(withFullUrl)
     }   

@@ -4,13 +4,8 @@ import { createItem,getItems, deleteItem } from '../controllers/itemController.j
 
 const itemRouter = express.Router()
 
-// TYPE HERE MULTER FUNCTION TO STORE IMAGE
-const storage = multer.diskStorage({
-    // destination: (_req, __file, cb) => cb(null, 'uploads/'),
-    // filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
-    destination: (_req, __file, setDestination) => setDestination(null, 'uploads/'),
-    filename: (_req, file, setFilename) => setFilename(null, `${Date.now()}-${file.originalname}`),
-});
+// Store uploads in memory so item creation works on Vercel's serverless filesystem.
+const storage = multer.memoryStorage();
 
 const upload = multer({ storage });
 

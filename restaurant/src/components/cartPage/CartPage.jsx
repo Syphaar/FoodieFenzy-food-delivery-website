@@ -13,7 +13,7 @@ const CartPage = () => {
     // FOR IMAGE URL
     const buildImageUrl = (path) => {
         if(!path) return '';
-        return path.startsWith('http') ? path : `${API_URL}/uploads/${path.replace(/^\/uploads\//, '')}`;
+        return path.startsWith('http') || path.startsWith('data:') ? path : `${API_URL}/uploads/${path.replace(/^\/uploads\//, '')}`;
     }
     
   return (
