@@ -6,6 +6,16 @@ import axios from 'axios'
 
 const API_URL = 'https://foodie-fenzy-delivery-backend.vercel.app';
 
+const getOrderImageUrl = item => {
+  const imageUrl = item?.imageUrl || item?.image || '';
+
+  if (typeof imageUrl !== 'string') return '';
+  if (imageUrl.startsWith('data:')) return '';
+  if (imageUrl.length > 2048) return '';
+
+  return imageUrl;
+};
+
 const Checkout = () => {
   const { totalAmount, cartItems, clearCart } = useCart();
   const navigate = useNavigate();
@@ -36,13 +46,13 @@ const Checkout = () => {
       setLoading(true);
 
       if (paymentStatus === 'success' && sessionId) {
-        axios.post(`${API_URL}/api/orders/confirm`,
-          { sessionId },
-          { headers: authHeaders }
-        )
+        axios.get(`${API_URL}/api/orders/confirm`, {
+          params: { session_id: sessionId },
+          headers: authHeaders
+        })
         .then(({data}) => {
           clearCart();
-          navigate('/myorder', { state: { order: data.order }})
+          navigate('/myorder', { state: { order: data.order || data }})
         })
         .catch(err => {
           console.error('Payment confirmation error:', err);
@@ -77,10 +87,11 @@ const Checkout = () => {
       tax,
       total: Number((subtotal + tax).toFixed(2)),
       items: cartItems.map(({ item, quantity }) => ({
+          itemId: item?._id,
           name: item.name,
-          price: item.price,
+          price: Number(item.price),
           quantity,
-          imageUrl: item.imageUrl || ''
+          imageUrl: getOrderImageUrl(item)
       }))
     };
 

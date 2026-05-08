@@ -29,6 +29,7 @@ const Navbar = () => {
   const handleLoginSuccess = () => {
     localStorage.setItem('loginData', JSON.stringify({loggedIn: true}));
     setIsAuthenticated(true);
+    setShowLoginModal(false);
     navigate('/');
   }
 

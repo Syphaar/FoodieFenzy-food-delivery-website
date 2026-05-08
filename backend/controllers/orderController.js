@@ -4,6 +4,14 @@ import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+const normalizeOrderImageUrl = imageUrl => {
+    if (typeof imageUrl !== 'string') return '';
+    if (imageUrl.startsWith('data:')) return '';
+    if (imageUrl.length > 2048) return '';
+
+    return imageUrl;
+};
+
 // CREATE ORDER FUNCTION
 export const createOrder = async (req, res) => {
     try {
@@ -18,11 +26,12 @@ export const createOrder = async (req, res) => {
         const orderItems = items.map(({ item, name, price, imageUrl, quantity }) => {
             // Use the request body directly if no nested 'item'
             const product = item || {};
+            const safeImageUrl = normalizeOrderImageUrl(product.imageUrl || imageUrl);
             return {
                 item: {
                     name: product.name || name || 'Unknown',       // ensures name is present
                     price: isNaN(Number(product.price ?? price)) ? 0 : Number(product.price ?? price), // FIXED here
-                    imageUrl: product.imageUrl || imageUrl || ''   // ensures imageUrl is present
+                    imageUrl: safeImageUrl
                 },
                 quantity: Math.max(Number(quantity) || 1, 1)       // ensures quantity >= 1
             }

@@ -17,7 +17,16 @@ const Login = ({ onLoginSuccess, onClose }) => {
 
   useEffect(() => {
     const stored = localStorage.getItem('loginData');
-    if (stored) setFormData(JSON.parse(stored));
+    if (!stored) return;
+
+    try {
+      const savedLogin = JSON.parse(stored);
+      if (savedLogin.email || savedLogin.password) {
+        setFormData(prev => ({ ...prev, ...savedLogin }));
+      }
+    } catch {
+      localStorage.removeItem('loginData');
+    }
   }, []);
 
   const handleSubmit = async event => {
@@ -38,7 +47,7 @@ const Login = ({ onLoginSuccess, onClose }) => {
 
         setShowToast({ visible: true, message: 'Login Successful!', isError: false })
         setTimeout(() => {
-          setShowToast({ visible: true, message: '', isError: false })
+          setShowToast({ visible: false, message: '', isError: false })
           onLoginSuccess(res.data.token)
         }, 1500)
       }
