@@ -5,7 +5,7 @@ import { FaDollarSign } from "react-icons/fa";
 import axios from 'axios'
 
 const AddItems = () => {
-    const [formData, setFormData] = useState({
+    const initialFormData = {
         name: '',
         description: '',
         category: '',
@@ -15,7 +15,13 @@ const AddItems = () => {
         total: 0,
         image: null,
         preview: ''
+    };
+    const [formData, setFormData] = useState({
+        ...initialFormData
     });
+    const [submitMessage, setSubmitMessage] = useState('');
+    const [isError, setIsError] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [categories] = useState([
         'Breakfast', 'Lunch', 'Dinner', 'Mexican', 'Italian', 'Desserts', 'Drinks'
     ]);
@@ -45,32 +51,32 @@ const AddItems = () => {
 
     const handleSubmit = async submitEvent => {
         submitEvent.preventDefault();
+        setSubmitMessage('');
+        setIsError(false);
+        setIsSubmitting(true);
+
         try {
             const payload = new FormData();
             Object.entries(formData).forEach(([key, val]) => {
                 if (key === 'preview') return;
-                payload.append(key, val)
+                payload.append(key, typeof val === 'string' ? val.trim() : val)
             });
 
             const res = await axios.post(
                 'https://foodie-fenzy-delivery-backend.vercel.app/api/items', payload, { headers: { 'Content-Type': 'multipart/form-data' }}
             );
-            setFormData({
-                name: '',
-                description: '',
-                category: '',
-                price: '',
-                rating: 0,
-                hearts: 0,
-                total: 0,
-                image: null,
-                preview: ''
-            })
+            setFormData({ ...initialFormData })
+            setSubmitMessage('Item added successfully');
             console.log(res.data);
         }
         catch (err) {
-            console.error('Error uploading item', err.response || err.message);
-            
+            const message = err.response?.data?.message || err.message || 'Error uploading item';
+            setIsError(true);
+            setSubmitMessage(message);
+            console.error('Error uploading item', message);
+        }
+        finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -170,8 +176,13 @@ const AddItems = () => {
                             </div>
 
                             <button type='submit' className={styles.actionBtn}>
-                                Add To Menu
+                                {isSubmitting ? 'Adding...' : 'Add To Menu'}
                             </button>
+                            {submitMessage && (
+                                <p className={`text-center text-sm ${isError ? 'text-red-400' : 'text-green-400'}`}>
+                                    {submitMessage}
+                                </p>
+                            )}
                         </div>
                     </form>
                 </div>

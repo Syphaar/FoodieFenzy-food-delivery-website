@@ -10,7 +10,14 @@ export const createItem = async (req, res, next) => {
         const total = Number(price) * 1;
 
         const newItem = new itemModal({
-            name, description, category, price, rating, hearts, imageUrl, total
+            name: name?.trim(),
+            description: description?.trim(),
+            category: category?.trim(),
+            price,
+            rating,
+            hearts,
+            imageUrl,
+            total
         })
 
         const saved = await newItem.save();
@@ -19,6 +26,9 @@ export const createItem = async (req, res, next) => {
     catch (err) {
         if (err.code === 11000) {
             return res.status(400).json({ message: 'Item name already exists'})
+        }
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: Object.values(err.errors)[0]?.message || 'Invalid item data' });
         }
         next(err);
     }
