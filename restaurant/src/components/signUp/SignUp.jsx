@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { FaArrowLeft, FaCheckCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaArrowLeft, FaCheckCircle, FaEye, FaEyeSlash, FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
@@ -45,8 +45,13 @@ const SignUp = () => {
 
         if (res.data.success && res.data.token) {
           localStorage.setItem('authToken', res.data.token)
+          if (res.data.user) {
+            localStorage.setItem('authUser', JSON.stringify(res.data.user));
+            localStorage.setItem('loginData', JSON.stringify({ loggedIn: true, user: res.data.user }));
+          }
+          window.dispatchEvent(new Event('auth-changed'));
           setShowToast({
-            visible: true, message: 'Sign up Successful!', icon: <FaCheckCircle />
+            visible: true, message: 'Sign Up Successful!', icon: <FaCheckCircle />
           })
           return;
         }
@@ -66,8 +71,16 @@ const SignUp = () => {
         {showToast.visible && <AwesomeToast message={showToast.message} icon={showToast.icon} />}
 
         <div className="w-full max-w-md bg-linear-to-br from-[#2D1B0E] to-[#4a372a] p-8 rounded-xl shadow-lg 
-          border-4 border-amber-700/30 transform transition-all duration-300 hover:shadow-2xl"
+          border-4 border-amber-700/30 transform transition-all duration-300 hover:shadow-2xl relative"
         >
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="absolute top-4 right-4 text-amber-400 hover:text-amber-300"
+          >
+            <FaTimes />
+          </button>
+
           <h1 className='text-3xl font-bold text-center bg-linear-to-r from-amber-400 to-amber-600 
             bg-clip-text text-transparent mb-6 hover:scale-105 transition-transform'
           >

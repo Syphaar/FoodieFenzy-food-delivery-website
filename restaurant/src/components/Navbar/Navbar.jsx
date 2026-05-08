@@ -16,18 +16,22 @@ const Navbar = () => {
   const location = useLocation();
   const { totalItems } = useCart();
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(localStorage.getItem('loginData')));
+  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(localStorage.getItem('authToken')));
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLoginModal(location.pathname === '/login');
-      setIsAuthenticated(Boolean(localStorage.getItem('loginData')));
+      setIsAuthenticated(Boolean(localStorage.getItem('authToken')));
     }, 0);
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
-  const handleLoginSuccess = () => {
-    localStorage.setItem('loginData', JSON.stringify({loggedIn: true}));
+  const handleLoginSuccess = (token, user) => {
+    if (token) localStorage.setItem('authToken', token);
+    if (user) {
+      localStorage.setItem('authUser', JSON.stringify(user));
+      localStorage.setItem('loginData', JSON.stringify({ loggedIn: true, user }));
+    }
     setIsAuthenticated(true);
     setShowLoginModal(false);
     navigate('/');
@@ -35,7 +39,12 @@ const Navbar = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('loginData');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
+    localStorage.removeItem('cart');
+    window.dispatchEvent(new Event('auth-changed'));
     setIsAuthenticated(false);
+    navigate('/');
   }
 
   const navLinks = generateNavLinks(isAuthenticated);

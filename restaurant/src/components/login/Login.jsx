@@ -40,15 +40,23 @@ const Login = ({ onLoginSuccess, onClose }) => {
 
       if (res.status === 200 && res.data.success && res.data.token) {
         localStorage.setItem('authToken', res.data.token);
+        if (res.data.user) {
+          localStorage.setItem('authUser', JSON.stringify(res.data.user));
+        }
+        window.dispatchEvent(new Event('auth-changed'));
 
         // REMEMBER ME
-        formData.rememberMe ? localStorage.setItem('loginData', JSON.stringify(formData))
+        formData.rememberMe ? localStorage.setItem('loginData', JSON.stringify({
+          email: formData.email,
+          rememberMe: formData.rememberMe,
+          user: res.data.user
+        }))
           : localStorage.removeItem('loginData')
 
         setShowToast({ visible: true, message: 'Login Successful!', isError: false })
         setTimeout(() => {
           setShowToast({ visible: false, message: '', isError: false })
-          onLoginSuccess(res.data.token)
+          onLoginSuccess(res.data.token, res.data.user)
         }, 1500)
       }
       else {

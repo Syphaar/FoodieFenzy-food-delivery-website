@@ -8,7 +8,9 @@ router.route('/')
     .get(authMiddleware, getCart)
     .post(authMiddleware, addToCart)
 
-router.post('/clear', authMiddleware, clearCart)
+router.route('/clear')
+    .post(authMiddleware, clearCart)
+    .put(authMiddleware, clearCart)
 
 router.route('/:id')
     .put(authMiddleware, updateCartItem)

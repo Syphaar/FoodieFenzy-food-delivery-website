@@ -133,7 +133,15 @@ const loginUser = async (req, res) => {
         }
 
         const token = createToken(user);
-        res.json({ success: true, token });
+        res.json({
+            success: true,
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Error" });
@@ -176,7 +184,15 @@ const registerUser = async (req, res) => {
 
         const user = await newUser.save();
         const token = createToken(user);
-        res.json({ success: true, token });
+        res.json({
+            success: true,
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: "Error" });

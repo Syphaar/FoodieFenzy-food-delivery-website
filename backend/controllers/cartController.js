@@ -42,7 +42,9 @@ export const addToCart = asyncHandler(async (req, res) => {
 
     const { itemId, quantity } = req.body;
 
-    if (!itemId || typeof quantity !== 'number') {
+    const nextQuantity = Number(quantity);
+
+    if (!itemId || !Number.isFinite(nextQuantity)) {
         res.status(400);
         throw new Error('itemId and quantity are required')
     }
@@ -50,7 +52,7 @@ export const addToCart = asyncHandler(async (req, res) => {
     let cartItem = await CartItems.findOne({ user: req.user._id, item: itemId });
     
     if (cartItem) {
-        cartItem.quantity = Math.max(1, cartItem.quantity + quantity)
+        cartItem.quantity = Math.max(1, cartItem.quantity + nextQuantity)
 
         if (cartItem.quantity < 1) {
             await cartItem.remove();
@@ -68,7 +70,7 @@ export const addToCart = asyncHandler(async (req, res) => {
     cartItem = await CartItems.create({
         user: req.user._id,
         item: itemId,
-        quantity
+        quantity: Math.max(1, nextQuantity)
     });
         await cartItem.populate('item');
 
@@ -148,7 +150,13 @@ export const updateCartItem = asyncHandler(async (req, res) => {
         throw new Error("Cart item not found");
     }
 
-    cartItem.quantity = Math.max(1, quantity);
+    const nextQuantity = Number(quantity);
+    if (!Number.isFinite(nextQuantity)) {
+        res.status(400);
+        throw new Error("Quantity must be a number");
+    }
+
+    cartItem.quantity = Math.max(1, nextQuantity);
     await cartItem.save();
     await cartItem.populate("item");
 

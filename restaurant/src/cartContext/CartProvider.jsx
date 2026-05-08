@@ -1,8 +1,37 @@
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import axios from "axios";
 import { CartContext } from "./CartContext";
 
 const API_URL = "https://foodie-fenzy-delivery-backend.vercel.app";
+
+const getAuthToken = () => localStorage.getItem("authToken");
+
+const getTokenUserId = (token = getAuthToken()) => {
+  if (!token) return "guest";
+
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.id || payload.email || "guest";
+  } catch {
+    return "guest";
+  }
+};
+
+const getCartStorageKey = () => `cart:${getTokenUserId()}`;
+
+const clearAuthSession = () => {
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("authUser");
+  localStorage.removeItem("loginData");
+};
+
+const isAuthError = err => err.response?.status === 401 || err.response?.status === 403;
+
+const redirectToLogin = () => {
+  clearAuthSession();
+  window.dispatchEvent(new Event("auth-changed"));
+  window.location.href = "/login";
+};
 
 // ------------------ REDUCER ------------------
 const cartReducer = (state, action) => {
@@ -12,13 +41,13 @@ const cartReducer = (state, action) => {
 
     case "ADD_ITEM": {
       const { _id, item, quantity } = action.payload;
-      const exists = state.find((cartItem) => cartItem._id === _id);
+      const exists = state.find((cartItem) => cartItem._id === _id || cartItem.item?._id === item?._id);
 
       // ✅ Increment quantity if item exists
       if (exists) {
         return state.map((cartItem) =>
-          cartItem._id === _id
-            ? { ...cartItem, quantity: cartItem.quantity + quantity }
+          cartItem._id === exists._id
+            ? { _id, item, quantity }
             : cartItem,
         );
       }
@@ -47,7 +76,7 @@ const cartReducer = (state, action) => {
 // ------------------ INITIALIZE FROM LOCAL STORAGE ------------------
 const initializer = () => {
   try {
-    return JSON.parse(localStorage.getItem("cart") || "[]");
+    return JSON.parse(localStorage.getItem(getCartStorageKey()) || "[]");
   } catch {
     return [];
   }
@@ -56,12 +85,31 @@ const initializer = () => {
 // ------------------ PROVIDER ------------------
 export const CartProvider = ({ children }) => {
   const [cartItems, dispatch] = useReducer(cartReducer, [], initializer);
+  const [cartStorageKey, setCartStorageKey] = useState(getCartStorageKey);
   console.log("Cart Items:", cartItems);
+
+  useEffect(() => {
+    const handleAuthChange = () => {
+      const nextCartStorageKey = getCartStorageKey();
+      setCartStorageKey(nextCartStorageKey);
+      try {
+        dispatch({
+          type: "HYDRATE_CART",
+          payload: JSON.parse(localStorage.getItem(nextCartStorageKey) || "[]")
+        });
+      } catch {
+        dispatch({ type: "HYDRATE_CART", payload: [] });
+      }
+    };
+
+    window.addEventListener("auth-changed", handleAuthChange);
+    return () => window.removeEventListener("auth-changed", handleAuthChange);
+  }, []);
 
   // Persist cart state
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
+    localStorage.setItem(cartStorageKey, JSON.stringify(cartItems));
+  }, [cartItems, cartStorageKey]);
 
   // HYDRATE FROM SERVER API
   // useEffect(() => {
@@ -81,7 +129,7 @@ export const CartProvider = ({ children }) => {
 
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
+    const token = getAuthToken();
     if (token) {
       axios
         .get(`${API_URL}/api/cart`, {
@@ -90,16 +138,15 @@ export const CartProvider = ({ children }) => {
         })
         .then((res) => dispatch({ type: "HYDRATE_CART", payload: res.data }))
         .catch((err) => {
-          if (err.response?.status === 403) {
+          if (isAuthError(err)) {
             console.log("Token expired. Logging out...");
-            localStorage.removeItem("authToken");
-            window.location.href = "/login";
+            redirectToLogin();
           } else {
             console.error(err);
           }
         });
     }
-  }, []);
+  }, [cartStorageKey]);
 
   // ------------------ ACTIONS ------------------
   // const addToCart = useCallback(async (item, qty) => {
@@ -156,7 +203,7 @@ export const CartProvider = ({ children }) => {
 
 
   const addToCart = useCallback(async (item, qty) => {
-  const token = localStorage.getItem("authToken");
+  const token = getAuthToken();
   try {
     const res = await axios.post(
       `${API_URL}/api/cart`,
@@ -174,7 +221,11 @@ export const CartProvider = ({ children }) => {
       }
     });
   } catch (err) {
-    console.error("Add to cart failed:", err.response?.data || err.message);
+    if (isAuthError(err)) {
+      redirectToLogin();
+    } else {
+      console.error("Add to cart failed:", err.response?.data || err.message);
+    }
   }
 }, []);
 
@@ -229,7 +280,7 @@ export const CartProvider = ({ children }) => {
   
 
   const removeFromCart = useCallback(async (_id) => {
-    const token = localStorage.getItem("authToken");
+    const token = getAuthToken();
     try {
       await axios.delete(`${API_URL}/api/cart/${_id}`, {
         withCredentials: true,
@@ -237,10 +288,9 @@ export const CartProvider = ({ children }) => {
       });
       dispatch({ type: "REMOVE_ITEM", payload: _id });
     } catch (err) {
-      if (err.response?.status === 403) {
+      if (isAuthError(err)) {
         console.log("Token expired. Logging out...");
-        localStorage.removeItem("authToken");
-        window.location.href = "/login";
+        redirectToLogin();
       } else {
         console.error("Remove failed:", err.response?.data || err.message);
       }
@@ -276,7 +326,12 @@ export const CartProvider = ({ children }) => {
 
 
   const updateQuantity = useCallback(async (_id, qty) => {
-    const token = localStorage.getItem("authToken");
+    if (qty < 1) {
+      await removeFromCart(_id);
+      return;
+    }
+
+    const token = getAuthToken();
     try {
       const res = await axios.put(
         `${API_URL}/api/cart/${_id}`,
@@ -285,15 +340,14 @@ export const CartProvider = ({ children }) => {
       );
       dispatch({ type: "UPDATE_QUANTITY", payload: res.data });
     } catch (err) {
-      if (err.response?.status === 403) {
+      if (isAuthError(err)) {
         console.log("Token expired. Logging out...");
-        localStorage.removeItem("authToken");
-        window.location.href = "/login";
+        redirectToLogin();
       } else {
         console.error("Update failed:", err.response?.data || err.message);
       }
     }
-  }, []);
+  }, [removeFromCart]);
 
 
 
@@ -318,7 +372,7 @@ export const CartProvider = ({ children }) => {
 
 
   const clearCart = useCallback(async () => {
-    const token = localStorage.getItem("authToken");
+    const token = getAuthToken();
     try {
       await axios.put(
         `${API_URL}/api/cart/clear`,
@@ -327,10 +381,9 @@ export const CartProvider = ({ children }) => {
       );
       dispatch({ type: "CLEAR_CART" });
     } catch (err) {
-      if (err.response?.status === 403) {
+      if (isAuthError(err)) {
         console.log("Token expired. Logging out...");
-        localStorage.removeItem("authToken");
-        window.location.href = "/login";
+        redirectToLogin();
       } else {
         console.error("Clear cart failed:", err.response?.data || err.message);
       }

@@ -55,9 +55,7 @@ const CartPage = () => {
                                 </div>
 
                                 <div className="flex items-center gap-3">
-                                    {/* to remove automatically when it reaches zero(0) i.e the line commented out */}
-                                    {/* <button onClick={() => quantity > 1 ? updateQuantity(_id, quantity - 1) : removeFromCart(_id)}> */}
-                                    <button onClick={() => updateQuantity(_id, Math.max(1, quantity - 1))} className='w-8 h-8 rounded-full 
+                                    <button onClick={() => quantity > 1 ? updateQuantity(_id, quantity - 1) : removeFromCart(_id)} className='w-8 h-8 rounded-full 
                                         bg-amber-900/40 flex items-center justify-center hover:bg-amber-800/50 transition-all duration-300'
                                     >
                                         <FaMinus className='w-4 h-4 text-amber-100' />
@@ -65,7 +63,7 @@ const CartPage = () => {
                                     <span className="w-8 text-center text-amber-100 font-cinzel">
                                         {quantity}
                                     </span>
-                                    <button onClick={() => updateQuantity(_id, Math.max(1, quantity + 1))} className='w-8 h-8 rounded-full 
+                                    <button onClick={() => updateQuantity(_id, quantity + 1)} className='w-8 h-8 rounded-full 
                                         bg-amber-900/40 flex items-center justify-center hover:bg-amber-800/50 transition-all duration-300'
                                     >
                                         <FaPlus className='w-4 h-4 text-amber-100' />
